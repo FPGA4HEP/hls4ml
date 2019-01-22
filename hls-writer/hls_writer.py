@@ -220,6 +220,11 @@ def write_test_bench(model):
     ###################
     ## test bench
     ###################
+    import shutil
+    if not os.path.exists('{}/tb_data/'.format(yamlConfig['OutputDir'])):
+        os.mkdir('{}/tb_data/'.format(yamlConfig['OutputDir']))
+    shutil.copyfile(yamlConfig['InputData'], '{}/tb_data/tb_input_features.dat'.format(yamlConfig['OutputDir']))
+    shutil.copyfile(yamlConfig['OutputPredictions'], '{}/tb_data/tb_output_predictions.dat'.format(yamlConfig['OutputDir']))
 
     filedir = os.path.dirname(os.path.abspath(__file__))
     f = open(os.path.join(filedir,'../hls-template/myproject_test.cpp'),'r')
