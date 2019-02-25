@@ -52,11 +52,14 @@ def extract_roc(yamlConfig,opts):
         ## Expected AUC from keras
         efpr, etpr, ethreshold = roc_curve(truth_df[:,i],predict_df[:,i])
         eauc = auc(efpr, etpr)
+        print('Output %i: Keras auc = %.1f%%'%(i, eauc * 100))
         plt.plot(etpr,efpr,label='Keras auc = %.1f%%'%(eauc * 100))
 
         ## Expected AUC from HLS
         dfpr, dtpr, dthreshold = roc_curve(truth_df[:,i],output_df[:,i])
         dauc = auc(dfpr, dtpr)
+        print('Output %i: HLS auc = %.1f%%'%(i, dauc * 100))
+        print('Output {}: Ratio HLS/Keras = {:.2f}'.format(i, dauc / eauc))
         plt.plot(dtpr,dfpr,label='HLS auc = %.1f%%'%(dauc * 100))
         plt.plot([], [], ' ', label="Ratio HLS/Keras = {:.2f}".format(dauc / eauc))
         
@@ -64,6 +67,8 @@ def extract_roc(yamlConfig,opts):
         if opts.useFPGA!="":
          dfpr, dtpr, dthreshold = roc_curve(truth_df[:,i],fpga_output_df[:,i])
          fauc = auc(dfpr, dtpr)
+         print('Output %i: FPGA auc = %.1f%%'%(i, fauc * 100))
+         print('Output {}: Ratio FPGA/HLS = {:.2f}'.format(i, fauc / dauc))
          plt.plot(dtpr,dfpr,label='FPGA auc = %.1f%%'%(fauc * 100))
          plt.plot([], [], ' ', label="Ratio FPGA/HLS = {:.2f}".format(fauc / dauc))
 
