@@ -6,6 +6,10 @@ TruthLabels: example-keras-model-files/KERAS_3layer_binary_truth_labels.dat
 OutputDir: my-hls-test-3layer-binary
 ProjectName: myproject
 XilinxPart: xcvu9p-fsgd2104-2-i
+ClockPeriod: 5
 
-ReuseFactor: 1
-DefaultPrecision: ap_fixed<16,6> 
+IOType: io_parallel # options: io_serial/io_parallel
+HLSConfig:
+  Model:
+    Precision: ap_fixed<16,6>
+    ReuseFactor: 1

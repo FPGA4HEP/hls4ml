@@ -221,10 +221,10 @@ def write_test_bench(model):
     ## test bench
     ###################
     import shutil
-    if not os.path.exists('{}/tb_data/'.format(yamlConfig['OutputDir'])):
-        os.mkdir('{}/tb_data/'.format(yamlConfig['OutputDir']))
-    shutil.copyfile(yamlConfig['InputData'], '{}/tb_data/tb_input_features.dat'.format(yamlConfig['OutputDir']))
-    shutil.copyfile(yamlConfig['OutputPredictions'], '{}/tb_data/tb_output_predictions.dat'.format(yamlConfig['OutputDir']))
+    if not os.path.exists('{}/tb_data/'.format(model.config.get_output_dir())):
+        os.mkdir('{}/tb_data/'.format(model.config.get_output_dir()))
+    shutil.copyfile(model.config.get_input_data(), '{}/tb_data/tb_input_features.dat'.format(model.config.get_output_dir()))
+    shutil.copyfile(model.config.get_output_predictions(), '{}/tb_data/tb_output_predictions.dat'.format(model.config.get_output_dir()))
 
     filedir = os.path.dirname(os.path.abspath(__file__))
     f = open(os.path.join(filedir,'../hls-template/myproject_test.cpp'),'r')
@@ -239,7 +239,7 @@ def write_test_bench(model):
             newline = line
             for inp in model.get_input_variables():
                 input_str = '  ' + inp.definition_cpp() + ' = {};\n'
-                default_val = ','.join(str(i) for i in [0] * inp.size())
+                default_val = ','.join(['in[{}]'.format(i) for i in range(inp.size())])
                 newline += input_str.format('{' + default_val + '}')
             for out in model.get_output_variables():
                 output_str = '  ' + out.definition_cpp() + ' = {};\n'
@@ -260,10 +260,22 @@ def write_test_bench(model):
         elif '//hls-fpga-machine-learning insert output' in line:
             newline = line
             for out in model.get_output_variables():
-                newline += '  for(int i = 0; i < {}; i++) {{\n'.format(out.size_cpp())
-                newline += '    std::cout << {}[i] << " ";\n'.format(out.cppname)
-                newline += '  }\n'
-                newline += '  std::cout << std::endl;\n'
+                #newline += '  for(int i = 0; i < {}; i++) {{\n'.format(out.size_cpp())
+                #newline += '    std::cout << {}[i] << " ";\n'.format(out.cppname)
+                #newline += '  }\n'
+                #newline += '  std::cout << std::endl;\n'
+                newline += '      if (e%5000==0) {\n'
+                newline += '        std::cout << "Predictions" << std::endl;\n'
+                newline += '        for(int i = 0; i < {}; i++) {{\n'.format(out.size_cpp())
+                newline += '            std::cout << pr[i] << " ";\n'
+                newline += '        }\n'
+                newline += '        std::cout << std::endl;\n'
+                newline += '        std::cout << "Quantized predictions" << std::endl;\n'
+                newline += '              for(int i = 0; i < {}; i++) {{\n'.format(out.size_cpp())
+                newline += '            std::cout << {}[i] << " ";\n'.format(out.cppname)
+                newline += '        }\n'
+                newline += '        std::cout << std::endl;\n'
+                newline += '      }\n'
         else:
             newline = line
         fout.write(newline)

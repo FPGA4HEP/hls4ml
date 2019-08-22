@@ -57,23 +57,11 @@ int main(int argc, char **argv) {
         current=strtok(NULL," ");
       }
       //hls-fpga-machine-learning insert data
-
+      
       //hls-fpga-machine-learning insert top-level-function
 
       //hls-fpga-machine-learning insert output
-
-      if (e%5000==0) {
-        std::cout << "Predictions" << std::endl;
-        for(int i=0; i<N_OUTPUTS; i++) {
-    	    std::cout << pr[i] << " ";
-        }
-        std::cout << std::endl;
-        std::cout << "Quantized predictions" << std::endl;
-        for(int i=0; i<N_OUTPUTS; i++) {
-    	    std::cout << res_str[i] << " ";
-        }
-        std::cout << std::endl;
-      }
+      
     }
     fin.close();
     fpr.close();

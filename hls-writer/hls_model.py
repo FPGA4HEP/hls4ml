@@ -30,6 +30,12 @@ class HLSConfig(object):
     def get_output_dir(self):
         return self.get_config_value('OutputDir')
 
+    def get_input_data(self):
+        return self.get_config_value('InputData')
+
+    def get_output_predictions(self):
+        return self.get_config_value('OutputPredictions')
+
     def get_precision(self, layer, var='default'):
         precision = self.layer_name_precision.get(layer.name.lower() + '_' + var)
         type_name = layer.name.lower() + '_' + var + '_t'
